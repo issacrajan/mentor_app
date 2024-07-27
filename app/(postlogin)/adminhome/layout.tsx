@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Navbar from "@/components/nav/Navbar";
-import { useAppContext } from "@/store/AppWrapper";
-import { AppShell, Burger, Group, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { IconUserBolt, IconKey, IconSettings } from "@tabler/icons-react";
-import classes from "../Layout.module.css";
-import UserMenu from "@/components/nav/UserMenu";
+import Navbar from '@/ui/components/nav/Navbar';
+import { useAppContext } from '@/ui/store/AppWrapper';
+import { AppShell, Burger, Group, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { IconUserBolt, IconKey, IconSettings } from '@tabler/icons-react';
+import classes from '../Layout.module.css';
+import UserMenu from '@/ui/components/nav/UserMenu';
 const linkData = [
-  { link: "/adminhome/user", label: "Users", icon: IconUserBolt },
-  { link: "/adminhome/resetpassword", label: "Reset Password", icon: IconKey },
-  { link: "/adminhome/settings", label: "Other Settings", icon: IconSettings },
+  { link: '/adminhome/user', label: 'Users', icon: IconUserBolt },
+  { link: '/adminhome/resetpassword', label: 'Reset Password', icon: IconKey },
+  { link: '/adminhome/settings', label: 'Other Settings', icon: IconSettings },
 ];
 
 export default function AdminHomeLayout({
@@ -32,7 +32,7 @@ export default function AdminHomeLayout({
       header={{ height: 90 }}
       navbar={{
         width: 300,
-        breakpoint: "sm",
+        breakpoint: 'sm',
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
       padding="md"

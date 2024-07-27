@@ -1,15 +1,15 @@
-import { useAppContext } from "@/store/AppWrapper";
-import { Avatar, Group, Menu, Text, UnstyledButton, rem } from "@mantine/core";
-import cx from "clsx";
-import classes from "./UserMenu.module.css";
+import { useAppContext } from '@/ui/store/AppWrapper';
+import { Avatar, Group, Menu, Text, UnstyledButton, rem } from '@mantine/core';
+import cx from 'clsx';
+import classes from './UserMenu.module.css';
 import {
   IconChevronDown,
   IconHeart,
   IconLogout,
   IconUserEdit,
-} from "@tabler/icons-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+} from '@tabler/icons-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function UserMenu() {
   const { user, setUser } = useAppContext();
@@ -20,7 +20,7 @@ export default function UserMenu() {
     <Menu
       width={260}
       position="bottom-end"
-      transitionProps={{ transition: "pop-top-right" }}
+      transitionProps={{ transition: 'pop-top-right' }}
       onClose={() => setUserMenuOpened(false)}
       onOpen={() => setUserMenuOpened(true)}
       withinPortal
@@ -60,7 +60,7 @@ export default function UserMenu() {
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item
-          onClick={() => router.push("/")}
+          onClick={() => router.push('/')}
           leftSection={
             <IconLogout
               style={{ width: rem(16), height: rem(16) }}

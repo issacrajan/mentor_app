@@ -1,4 +1,4 @@
-import { useAppContext } from "@/store/AppWrapper";
+import { useAppContext } from '@/ui/store/AppWrapper';
 import {
   Anchor,
   Button,
@@ -9,50 +9,57 @@ import {
   Stack,
   Text,
   TextInput,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React from "react";
-import classes from "./Login.module.css";
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import classes from './Login.module.css';
+import { notifications } from '@mantine/notifications';
 
 const LoginForm = ({ userType }: { userType: string }) => {
   const router = useRouter();
   const appContext = useAppContext();
-  const isStudentLogin = "Student" === userType || "Mentor" === userType;
+  const isStudentLogin = 'Student' === userType || 'Mentor' === userType;
   const form = useForm({
     initialValues: {
-      loginId: "",
-      loginPwd: "",
+      loginId: '',
+      loginPwd: '',
       userType: userType,
     },
     validate: {
       loginId: (val) =>
-        val && val.length > 1 ? null : "Please enter login ID",
+        val && val.length > 1 ? null : 'Please enter login ID',
       loginPwd: (val) =>
-        val.length < 4 ? "Password should be min of 4 chars" : null,
+        val.length < 4 ? 'Password should be min of 4 chars' : null,
     },
   });
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(form.getValues());
     form.validate();
-    if (form.isValid()) {
-      console.log(form.getValues());
+    if (!form.isValid()) {
+      return;
     }
-    const resp = await fetch("/api/login", {
-      method: "POST",
+
+    const resp = await fetch('/api/login', {
+      method: 'POST',
       body: JSON.stringify(form.getValues()),
     });
 
     const json = await resp.json();
     if (resp.ok) {
       const userObj = { ...json.user };
-      const homePath: string = "/" + json.user.userType.toLowerCase() + "home";
+      console.log(userObj);
+      const homePath: string = '/' + json.user.userType.toLowerCase() + 'home';
       userObj.homePath = homePath;
       appContext.setUser(userObj);
 
       router.push(homePath);
+    } else {
+      const message = json?.message || 'Something went wrong in login';
+      notifications.show({ title: 'Login Error', message });
     }
     console.log(json);
   };
@@ -60,10 +67,10 @@ const LoginForm = ({ userType }: { userType: string }) => {
   return (
     <Card
       style={{
-        display: "flex",
+        display: 'flex',
         // justifyContent: "center",
         // alignItems: "center",
-        width: "450px",
+        width: '450px',
       }}
       mt="lg"
       shadow="md"
@@ -80,14 +87,14 @@ const LoginForm = ({ userType }: { userType: string }) => {
           <TextInput
             label="Login ID"
             placeholder="student@nitte.com"
-            key={form.key("loginId")}
-            {...form.getInputProps("loginId")}
+            key={form.key('loginId')}
+            {...form.getInputProps('loginId')}
             radius="md"
           />
           <PasswordInput
             label="Password"
-            key={form.key("loginPwd")}
-            {...form.getInputProps("loginPwd")}
+            key={form.key('loginPwd')}
+            {...form.getInputProps('loginPwd')}
             radius="md"
           />
         </Stack>
@@ -100,7 +107,7 @@ const LoginForm = ({ userType }: { userType: string }) => {
         {isStudentLogin && <Divider my="md" variant="dashed" />}
         {isStudentLogin && (
           <Text ta="center" mt="md">
-            Don&apos;t have an account?{" "}
+            Don&apos;t have an account?{' '}
             <Link
               className={classes.register}
               href="#"

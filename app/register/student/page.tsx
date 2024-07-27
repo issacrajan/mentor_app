@@ -1,9 +1,9 @@
-"use client";
-import { AppShell, Group, Title } from "@mantine/core";
-import Image from "next/image";
-import React from "react";
-import classes from "./Student.module.css";
-import StudentRegister from "@/components/student/Register";
+'use client';
+import { AppShell, Group, Title } from '@mantine/core';
+import Image from 'next/image';
+import React from 'react';
+import classes from './Student.module.css';
+import StudentRegister from '@/ui/components/student/Register';
 function RegisterStudentPage() {
   return (
     <AppShell header={{ height: 100 }} padding="md" bg="gray.0">
@@ -23,11 +23,11 @@ function RegisterStudentPage() {
 
       <AppShell.Main
         style={{
-          display: "block",
+          display: 'block',
           // justifyContent: "stretch",
           // alignItems: "stretch",
           // width: "600px",
-          border: "2px solid red",
+          border: '2px solid red',
         }}
       >
         <StudentRegister />

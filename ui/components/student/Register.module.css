@@ -18,3 +18,9 @@
     }
   }
 }
+
+.list {
+  :hover {
+    background-color: var(--mantine-color-blue-2);
+  }
+}
