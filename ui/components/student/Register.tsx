@@ -1,69 +1,104 @@
-"use client";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   Divider,
-  Grid,
   Group,
   Radio,
   Stack,
-  Stepper,
   Tabs,
   TextInput,
   Title,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { DateInput } from "@mantine/dates";
-import classes from "./Register.module.css";
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { DateInput } from '@mantine/dates';
+import { notifications } from '@mantine/notifications';
+import { useAppContext } from '@/ui/store/AppWrapper';
+import classes from './Register.module.css';
 
 function StudentRegister() {
+  const router = useRouter();
+  const appContext = useAppContext();
   const [active, setActive] = useState(1);
-  const [accommodation, setAccommodation] = useState("");
+  const [accommodation, setAccommodation] = useState('');
   const [showGuardian, setShowGuardian] = useState<boolean>(true);
 
   const form = useForm({
     initialValues: {
-      loginId: "",
-      loginPwd: "",
-      userType: "Student",
-      studentFullName: "",
       student: {
-        usn: "",
-        birthDate: "",
-        gender: "",
-        cetOrComedkRank: "",
-        admissionCategory: "",
-        accommodation: "",
-        mobileNumber: "",
-        emailId: "",
-        bloodGroup: "",
+        id: '',
+        userId: '',
+        userPwd: '',
+        userConfirmPwd: '',
+        fullName: '',
+        usn: '',
+        studentDOB: '',
+        studentGender: '',
+        studentRank: '',
+        admissionCategory: '',
+        accommodation: '',
+        mobileNumber: '',
+        emailId: '',
+        bloodGroup: '',
       },
       parent: {
-        fatherName: "",
-        motherName: "",
-        occupation: "",
-        currentAddress: "",
-        emailId: "",
-        mobileNumber: "",
+        fatherName: '',
+        motherName: '',
+        occupation: '',
+        currentAddress: '',
+        emailId: '',
+        mobileNumber: '',
       },
       guardian: {
-        guardianName: "",
-        occupation: "",
-        currentAddress: "",
-        emailId: "",
-        mobileNumber: "",
+        guardianName: '',
+        occupation: '',
+        currentAddress: '',
+        emailId: '',
+        mobileNumber: '',
       },
     },
     validate: {
-      loginId: (val) =>
-        val && val.length > 1 ? null : "Please enter login ID",
-      loginPwd: (val) =>
-        val.length < 4 ? "Password should be min of 4 chars" : null,
+      student: {
+        userId: (val) =>
+          val && val.length > 1 ? null : 'Please enter login ID',
+        userPwd: (val) =>
+          val.length < 4 ? 'Password should be min of 4 chars' : null,
+      },
     },
   });
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(form.getValues());
+    form.validate();
+    if (!form.isValid()) {
+      return;
+    }
+
+    const resp = await fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(form.getValues()),
+    });
+
+    const json = await resp.json();
+    if (resp.ok) {
+      const userObj = { ...json.user };
+      console.log(userObj);
+      const homePath: string = '/' + json.user.userType.toLowerCase() + 'home';
+      userObj.homePath = homePath;
+      appContext.setUser(userObj);
+
+      router.push(homePath);
+    } else {
+      const message = json?.message || 'Something went wrong in login';
+      notifications.show({ title: 'Login Error', message });
+    }
+    console.log(json);
+  };
+
   return (
-    <form onSubmit={form.onSubmit((values) => console.log(values))}>
+    <form onSubmit={handleSubmit}>
       <Stack gap="0">
         <Title order={1}>Student Registration</Title>
         <Divider my="xs" />
@@ -93,14 +128,14 @@ function StudentRegister() {
                 <TextInput
                   label="Full Name"
                   placeholder="Full Name"
-                  key={form.key("studentFullName")}
-                  {...form.getInputProps("studentFullName")}
+                  key={form.key('studentFullName')}
+                  {...form.getInputProps('studentFullName')}
                 />
                 <TextInput
                   label="USN"
                   placeholder="USN"
-                  key={form.key("student.usn")}
-                  {...form.getInputProps("student.usn")}
+                  key={form.key('student.usn')}
+                  {...form.getInputProps('student.usn')}
                 />
                 <DateInput
                   clearable
@@ -108,15 +143,15 @@ function StudentRegister() {
                   label="Date of Birth"
                   valueFormat="DD/MM/YYYY"
                   placeholder="Date of Birth"
-                  key={form.key("student.birthDate")}
-                  {...form.getInputProps("student.birthDate")}
+                  key={form.key('student.birthDate')}
+                  {...form.getInputProps('student.birthDate')}
                 />
                 <Radio.Group
                   name="gender"
                   label="Gender"
                   withAsterisk
-                  key={form.key("student.gender")}
-                  {...form.getInputProps("student.gender")}
+                  key={form.key('student.gender')}
+                  {...form.getInputProps('student.gender')}
                 >
                   <Group mt="xs">
                     <Radio value="M" label="Male" />
@@ -128,15 +163,15 @@ function StudentRegister() {
                 <TextInput
                   label="CET/COMEDK Rank"
                   placeholder="CET/COMEDK Rank"
-                  key={form.key("student.cetOrComedkRank")}
-                  {...form.getInputProps("student.cetOrComedkRank")}
+                  key={form.key('student.cetOrComedkRank')}
+                  {...form.getInputProps('student.cetOrComedkRank')}
                 />
                 <Radio.Group
                   name="admissionCategory"
                   label="Admission Category"
                   withAsterisk
-                  key={form.key("student.admissionCategory")}
-                  {...form.getInputProps("student.admissionCategory")}
+                  key={form.key('student.admissionCategory')}
+                  {...form.getInputProps('student.admissionCategory')}
                 >
                   <Group mt="xs">
                     <Radio value="Management" label="Management" />
@@ -151,10 +186,10 @@ function StudentRegister() {
                   label="Accommodation"
                   value={accommodation}
                   withAsterisk
-                  key={form.key("student.accommodation")}
+                  key={form.key('student.accommodation')}
                   // {...form.getInputProps("student.accommodation")}
                   onChange={(value) => {
-                    setShowGuardian(value !== "DayScholar");
+                    setShowGuardian(value !== 'DayScholar');
                     setAccommodation(value);
                   }}
                 >
@@ -169,20 +204,20 @@ function StudentRegister() {
                 <TextInput
                   label="Mobile Number"
                   placeholder="Mobile Number"
-                  key={form.key("student.mobileNumber")}
-                  {...form.getInputProps("student.mobileNumber")}
+                  key={form.key('student.mobileNumber')}
+                  {...form.getInputProps('student.mobileNumber')}
                 />
                 <TextInput
                   label="Email ID"
                   placeholder="Email ID"
-                  key={form.key("student.emailId")}
-                  {...form.getInputProps("student.emailId")}
+                  key={form.key('student.emailId')}
+                  {...form.getInputProps('student.emailId')}
                 />
                 <TextInput
                   label="Blood Group"
                   placeholder="Blood Group"
-                  key={form.key("student.bloodGroup")}
-                  {...form.getInputProps("student.bloodGroup")}
+                  key={form.key('student.bloodGroup')}
+                  {...form.getInputProps('student.bloodGroup')}
                 />
               </Group>
 
@@ -190,20 +225,20 @@ function StudentRegister() {
                 <TextInput
                   label="Login Id"
                   placeholder="Login Id"
-                  key={form.key("loginId")}
-                  {...form.getInputProps("loginId")}
+                  key={form.key('loginId')}
+                  {...form.getInputProps('loginId')}
                 />
                 <TextInput
                   label="Password"
                   placeholder="Password"
-                  key={form.key("loginPwd")}
-                  {...form.getInputProps("loginPwd")}
+                  key={form.key('loginPwd')}
+                  {...form.getInputProps('loginPwd')}
                 />
                 <TextInput
                   label="Confirm Password"
                   placeholder="Confirm Password"
-                  key={form.key("confirmLoginPwd")}
-                  {...form.getInputProps("confirmLoginPwd")}
+                  key={form.key('confirmLoginPwd')}
+                  {...form.getInputProps('confirmLoginPwd')}
                 />
               </Group>
             </Stack>
@@ -215,15 +250,15 @@ function StudentRegister() {
                   flex={1}
                   label="Father Name"
                   placeholder="Father Name"
-                  key={form.key("parent.fatherName")}
-                  {...form.getInputProps("parent.fatherName")}
+                  key={form.key('parent.fatherName')}
+                  {...form.getInputProps('parent.fatherName')}
                 />
                 <TextInput
                   flex={1}
                   label="Mother Name"
                   placeholder="Mother Name"
-                  key={form.key("parent.motherName")}
-                  {...form.getInputProps("parent.motherName")}
+                  key={form.key('parent.motherName')}
+                  {...form.getInputProps('parent.motherName')}
                 />
               </Group>
 
@@ -232,15 +267,15 @@ function StudentRegister() {
                   flex={1}
                   label="Occupation"
                   placeholder="Occupation"
-                  key={form.key("parent.occupation")}
-                  {...form.getInputProps("parent.occupation")}
+                  key={form.key('parent.occupation')}
+                  {...form.getInputProps('parent.occupation')}
                 />
                 <TextInput
                   flex={1}
                   label="Current Address"
                   placeholder="Current Address"
-                  key={form.key("parent.currentAddress")}
-                  {...form.getInputProps("parent.currentAddress")}
+                  key={form.key('parent.currentAddress')}
+                  {...form.getInputProps('parent.currentAddress')}
                 />
               </Group>
 
@@ -249,15 +284,15 @@ function StudentRegister() {
                   flex={1}
                   label="Email Id"
                   placeholder="Email Id"
-                  key={form.key("parent.emailId")}
-                  {...form.getInputProps("parent.emailId")}
+                  key={form.key('parent.emailId')}
+                  {...form.getInputProps('parent.emailId')}
                 />
                 <TextInput
                   flex={1}
                   label="Mobile"
                   placeholder="Mobile"
-                  key={form.key("parent.mobileNumber")}
-                  {...form.getInputProps("parent.mobileNumber")}
+                  key={form.key('parent.mobileNumber')}
+                  {...form.getInputProps('parent.mobileNumber')}
                 />
               </Group>
             </Stack>
@@ -269,8 +304,8 @@ function StudentRegister() {
                   flex={1}
                   label="Guardian Name"
                   placeholder="Guardian Name"
-                  key={form.key("guardian.guardianName")}
-                  {...form.getInputProps("guardian.guardianName")}
+                  key={form.key('guardian.guardianName')}
+                  {...form.getInputProps('guardian.guardianName')}
                 />
               </Group>
 
@@ -279,15 +314,15 @@ function StudentRegister() {
                   flex={1}
                   label="Occupation"
                   placeholder="Occupation"
-                  key={form.key("guardian.occupation")}
-                  {...form.getInputProps("guardian.occupation")}
+                  key={form.key('guardian.occupation')}
+                  {...form.getInputProps('guardian.occupation')}
                 />
                 <TextInput
                   flex={1}
                   label="Current Address"
                   placeholder="Current Address"
-                  key={form.key("guardian.currentAddress")}
-                  {...form.getInputProps("guardian.currentAddress")}
+                  key={form.key('guardian.currentAddress')}
+                  {...form.getInputProps('guardian.currentAddress')}
                 />
               </Group>
 
@@ -296,15 +331,15 @@ function StudentRegister() {
                   flex={1}
                   label="Email Id"
                   placeholder="Email Id"
-                  key={form.key("guardian.emailId")}
-                  {...form.getInputProps("guardian.emailId")}
+                  key={form.key('guardian.emailId')}
+                  {...form.getInputProps('guardian.emailId')}
                 />
                 <TextInput
                   flex={1}
                   label="Mobile"
                   placeholder="Mobile"
-                  key={form.key("guardian.mobileNumber")}
-                  {...form.getInputProps("guardian.mobileNumber")}
+                  key={form.key('guardian.mobileNumber')}
+                  {...form.getInputProps('guardian.mobileNumber')}
                 />
               </Group>
             </Stack>

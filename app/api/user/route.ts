@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/utils/db";
+import { NextRequest, NextResponse } from 'next/server';
+import { createUser } from '@/backend/service/user/UserService';
 
 //create user
 export async function POST(req: NextRequest) {
   const payload = await req.json();
-  console.log("payload", payload);
+  console.log('payload', payload);
   const user = {
     loginId: payload.loginId,
     loginPwd: payload.loginPwd,
@@ -12,9 +12,7 @@ export async function POST(req: NextRequest) {
     userName: payload.userName,
     userStatus: payload.userStatus,
   };
-  const createdUser = await prisma.appUser.create({
-    data: user,
-  });
+  const createdUser = createUser(user);
 
   return NextResponse.json({ user: createdUser }, { status: 200 });
 }
