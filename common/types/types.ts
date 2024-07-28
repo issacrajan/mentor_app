@@ -1,65 +1,41 @@
+import {
+	AppUser,
+	StudentGuardianInfo,
+	StudentInfo,
+	StudentParentInfo,
+} from '@/backend/db/schema';
 import { AdmissionCategory, Gender, StudentAccommodation } from '../enums';
 
 export type UserInfoType = {
-  userId?: string;
-  userName?: string;
-  roleName?: string;
-  userEmail?: string;
-  homePath?: string;
+	userId?: string;
+	userName?: string;
+	roleName?: string;
+	userEmail?: string;
+	homePath?: string;
 };
 
 export type GlobalContent = {
-  user: UserInfoType;
-  setUser: (c: UserInfoType) => void;
+	user: UserInfoType;
+	setUser: (c: UserInfoType) => void;
 };
 
 export type UserType = {
-  loginId?: string;
-  loginPwd?: string;
-  userType?: string;
-  userName?: string;
-  userStatus?: string;
+	loginId?: string;
+	loginPwd?: string;
+	userType?: string;
+	userName?: string;
+	userStatus?: string;
 };
-export type StudentInfoType = {
-  id?: string;
-  userId?: string;
-  userPwd?: string;
-  userConfirmPwd?: string;
-  fullName?: string;
-  usn?: string;
-  studentDOB?: string;
-  studentGender?: Gender;
-  studentRank?: number;
-  admissionCategory?: AdmissionCategory;
-  accommodation?: StudentAccommodation;
-  mobileNumber?: string;
-  emailId?: string;
-  bloodGroup?: string;
-  createdTs?: Date;
-  updatedTs?: Date;
-};
+export type AppUserType = typeof AppUser.$inferInsert;
 
-export type StudentParentType = {
-  id?: string;
-  studentRecordId?: string;
-  fatherName?: string;
-  motherName?: string;
-  occupation?: string;
-  currentAddress?: string;
-  mobileNumber?: string;
-  emailId?: string;
-  createdTs?: Date;
-  updatedTs?: Date;
-};
+export type StudentInfoType = typeof StudentInfo.$inferInsert;
 
-export type StudentGuardianType = {
-  id?: string;
-  studentRecordId?: string;
-  guardianName?: string;
-  occupation?: string;
-  currentAddress?: string;
-  mobileNumber?: string;
-  emailId?: string;
-  createdTs?: Date;
-  updatedTs?: Date;
+export type StudentParentType = typeof StudentParentInfo.$inferInsert;
+
+export type StudentGuardianType = typeof StudentGuardianInfo.$inferInsert;
+
+export type StudentDetailType = {
+	student: StudentInfoType;
+	parent: StudentParentType;
+	guardian: StudentGuardianType;
 };
