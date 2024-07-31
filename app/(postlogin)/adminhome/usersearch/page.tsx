@@ -1,7 +1,9 @@
-"use client";
+'use client';
+
+import UserSearch from '@/ui/components/user/UserSearch';
 
 function UserSearchPage() {
-  return <div>UserSearchPage</div>;
+	return <UserSearch />;
 }
 
 export default UserSearchPage;

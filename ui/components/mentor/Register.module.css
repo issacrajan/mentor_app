@@ -1,0 +1,46 @@
+.tab {
+	/* position: relative; */
+	border: 1px solid
+		light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
+	background-color: light-dark(
+		var(--mantine-color-white),
+		var(--mantine-color-dark-6)
+	);
+
+	&[data-active] {
+		z-index: 1;
+		background-color: var(--mantine-color-blue-filled);
+		border-color: var(--mantine-color-blue-filled);
+		color: var(--mantine-color-white);
+
+		@mixin hover {
+			background-color: var(--mantine-color-blue-filled-hover);
+		}
+	}
+}
+
+.list {
+	:hover {
+		background-color: var(--mantine-color-blue-2);
+	}
+}
+.title {
+	color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+	font-family:
+		Greycliff CF,
+		var(--mantine-font-family);
+	line-height: 1;
+}
+
+.description {
+	margin-bottom: var(--mantine-spacing-md);
+}
+
+.loginPage {
+	font-weight: 700;
+	color: light-dark(var(--mantine-color-blue-6), var(--mantine-color-dark-5));
+	&:hover {
+		font-weight: 800;
+		color: light-dark(var(--mantine-color-blue-9), var(--mantine-color-dark-9));
+	}
+}

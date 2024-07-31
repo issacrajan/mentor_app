@@ -1,18 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser } from '@/backend/service/user/UserService';
+import { createUser, readUser } from '@/backend/service/user/UserService';
+import { logger } from '@/logger';
+export const dynamic = 'force-dynamic';
+//read user
+
+export async function GET(req: NextRequest) {
+	const id = req.nextUrl.searchParams.get('id');
+	logger.info(`reading user id:${id}`);
+	if (!id) {
+		return NextResponse.json({ message: 'ID is missing' }, { status: 417 });
+	}
+
+	try {
+		const userDtl = await readUser({ id });
+
+		console.log('userDtl', userDtl);
+		return NextResponse.json({ ...userDtl[0] }, { status: 200 });
+	} catch (error) {
+		return NextResponse.json(
+			{ message: `error in fetching user ${error}` },
+			{ status: 500 },
+		);
+	}
+}
 
 //create user
 export async function POST(req: NextRequest) {
-  const payload = await req.json();
-  console.log('payload', payload);
-  const user = {
-    loginId: payload.loginId,
-    loginPwd: payload.loginPwd,
-    userType: payload.userType,
-    userName: payload.userName,
-    userStatus: payload.userStatus,
-  };
-  const createdUser = createUser(user);
+	const payload = await req.json();
+	console.log('payload', payload);
+	const user = { ...payload };
 
-  return NextResponse.json({ user: createdUser }, { status: 200 });
+	const createdUser = createUser(user);
+
+	return NextResponse.json({ user: createdUser }, { status: 200 });
+}
+
+//update some columns in user
+export async function PATCH(req: NextRequest) {
+	const payload = await req.json();
+	console.log('payload', payload);
+	const user = {
+		loginId: payload.loginId,
+		loginPwd: payload.loginPwd,
+		userType: payload.userType,
+		userName: payload.userName,
+		userStatus: payload.userStatus,
+	};
+	const createdUser = createUser(user);
+
+	return NextResponse.json({ user: createdUser }, { status: 200 });
 }

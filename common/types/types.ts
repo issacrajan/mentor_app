@@ -26,6 +26,13 @@ export type UserType = {
 	userName?: string;
 	userStatus?: string;
 };
+
+export type UserSearchType = {
+	userId?: string;
+	userName?: string;
+	userType?: string;
+};
+
 export type AppUserType = typeof AppUser.$inferInsert;
 
 export type StudentInfoType = typeof StudentInfo.$inferInsert;
