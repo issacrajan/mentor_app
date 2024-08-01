@@ -3,61 +3,53 @@ import { db } from '@/backend/db/db';
 import { AppUser } from '@/backend/db/schema';
 import { and, eq, like, or } from 'drizzle-orm';
 
-const isValidSearch = (s: UserSearchType) => {
-	return s.userId || s.userName || s.userType;
-};
-const isValid = (s: string | undefined) => {
-	return s && s.trim().length > 0;
-};
+import * as UserRepo from '@/backend/repo/system/UserRepo';
 
-export const readUser = async ({ id }: { id: string }) => {
-	return await db.select().from(AppUser).where(eq(AppUser.id, id));
+export const readUser = ({ id }: { id: string }) => {
+	return UserRepo.readUser({ id });
 };
 
-export const searchUser = async (userSearch: UserSearchType) => {
-	const condition = isValidSearch(userSearch)
-		? and(
-				isValid(userSearch.userId)
-					? like(AppUser.userId, userSearch.userId || '')
-					: undefined,
-				isValid(userSearch.userName)
-					? or(
-							like(AppUser.lastName, userSearch.userName || ''),
-							like(AppUser.lastName, userSearch.userName || ''),
-						)
-					: undefined,
-				isValid(userSearch.userType)
-					? eq(AppUser.userType, userSearch.userType || '')
-					: undefined,
-			)
-		: undefined;
-	const result = await db.select().from(AppUser).where(condition);
-
-	return result;
+export const searchUser = (userSearchCriteria: UserSearchType) => {
+	return UserRepo.searchUser(userSearchCriteria);
 };
 
-export const createUser = async (user: AppUserType) => {
-	return await db.insert(AppUser).values(user).returning();
+export const createUser = (user: AppUserType) => {
+	return UserRepo.createUser(user);
 };
 
-export const updateUser = async (user: AppUserType) => {
-	const id = user.id;
+export const updateUser = (user: AppUserType) => {
+	return UserRepo.updateUser(user);
+};
+
+export const changePwd = async ({
+	id,
+	userPwd,
+	userConfirmPwd,
+}: {
+	id?: string;
+	userPwd?: string;
+	userConfirmPwd?: string;
+}) => {
 	if (!id) {
-		throw new Error('User id is missing');
+		throw new Error('User Id is missing');
+	}
+	if (!userPwd) {
+		throw new Error('User new password is required');
+	}
+	if (!userConfirmPwd) {
+		throw new Error('User new conform password is required');
+	}
+	if (userPwd !== userConfirmPwd) {
+		throw new Error('User new password and conform password not matching');
 	}
 
-	const whereClause = eq(AppUser.id, id);
-	const dbUser = await db.select().from(AppUser).where(whereClause);
-
-	if (!dbUser) {
-		throw new Error(`User record not found with id ${id}`);
+	const userRec: AppUserType | undefined = await UserRepo.readUser({ id });
+	if (!userRec) {
+		throw new Error(`User record not found for id ${id}`);
 	}
-	const updateCols: AppUserType = {};
-	updateCols.firstName = user.firstName;
-
-	return await db
-		.update(AppUser)
-		.set(updateCols)
-		.where(whereClause)
-		.returning();
+	if (userPwd === userRec.userPwd) {
+		throw new Error('invalid User new password. please try another password.');
+	}
+	const updateMe = { id, userPwd };
+	return UserRepo.updateUser(updateMe);
 };

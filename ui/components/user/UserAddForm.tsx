@@ -29,13 +29,15 @@ const UserAddForm = () => {
 	const isMentor = 'Mentor' === userType;
 
 	useEffect(() => {
-		fetch(`/api/user?id=${id}`)
-			.then((res) => res.json())
-			.then((data) => {
-				form.setInitialValues(data);
-				form.setValues(data);
-			});
-	}, []);
+		if (id) {
+			fetch(`/api/user?id=${id}`)
+				.then((res) => res.json())
+				.then((data) => {
+					form.setInitialValues(data);
+					form.setValues(data);
+				});
+		}
+	}, [id]);
 
 	const form = useForm({
 		initialValues: {

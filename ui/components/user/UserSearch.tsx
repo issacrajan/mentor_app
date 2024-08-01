@@ -7,6 +7,7 @@ import {
 	TextInput,
 	Select,
 	Table,
+	Divider,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import Link from 'next/link';
@@ -96,10 +97,20 @@ const UserSearch = () => {
 				radius="md"
 				withBorder
 			>
-				<Text size="lg" fw={800}>
-					Search user.
-				</Text>
-
+				<Group justify="space-between">
+					<Text size="lg" fw={800}>
+						Search user.
+					</Text>
+					<Button
+						type="button"
+						onClick={(e) => router.push('/adminhome/user')}
+						radius="xl"
+						px="xl"
+					>
+						Add User
+					</Button>
+				</Group>
+				<Divider mt={10} />
 				<form onSubmit={handleLogin}>
 					<Stack>
 						<TextInput
@@ -126,7 +137,7 @@ const UserSearch = () => {
 						/>
 					</Stack>
 
-					<Group justify="flex-end" mt="xl" px="xl">
+					<Group justify="flex-end" mt="xl">
 						<Button type="submit" disabled={searching} radius="xl" px="xl">
 							Search
 						</Button>

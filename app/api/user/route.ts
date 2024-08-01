@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, readUser } from '@/backend/service/user/UserService';
 import { logger } from '@/logger';
+import { AppUserType } from '@/common/types/types';
 export const dynamic = 'force-dynamic';
 //read user
 
@@ -29,7 +30,14 @@ export async function POST(req: NextRequest) {
 	const payload = await req.json();
 	console.log('payload', payload);
 	const user = { ...payload };
-
+	console.log('create user', user);
+	const err: AppUserType = {};
+	if (!user.userId) {
+		err.userId = 'user id is required';
+	}
+	if (!user.userPwd) {
+		err.userPwd = 'password is required';
+	}
 	const createdUser = createUser(user);
 
 	return NextResponse.json({ user: createdUser }, { status: 200 });
