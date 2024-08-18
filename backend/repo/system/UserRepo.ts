@@ -1,6 +1,6 @@
 import { db } from '@/backend/db/db';
 import { AppUser } from '@/backend/db/schema';
-import { isValid } from '@/backend/utils';
+import { AppError, INVALID_INPUT, isValid } from '@/backend/utils';
 
 import { AppUserType, UserSearchType } from '@/common/types/types';
 import { and, eq, like, or } from 'drizzle-orm';
@@ -14,7 +14,7 @@ export const createUser = async (user: AppUserType) => {
 export const updateUser = async (user: AppUserType) => {
 	const id = user.id;
 	if (!id) {
-		throw new Error('User id is missing');
+		throw new AppError('User id is missing', INVALID_INPUT);
 	}
 
 	const whereClause = eq(AppUser.id, id);
